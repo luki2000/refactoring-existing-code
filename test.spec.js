@@ -6,7 +6,7 @@ function statment(invoice, plays) {
                                       style: "currency", currency: "USD",
                                       minimumFractionDigits: 2}).format;
   for(let perf of invoice.performances) {
-    const play = plays[perf.playID];
+    const play = playFor(perf);
     let thisAmount = amountFor(perf, play);
 
     //add volume credits
@@ -23,27 +23,31 @@ function statment(invoice, plays) {
   return result;
 }
 
+function playFor(aPerformance){
+  return plays[aPerformance.playID];
+}
 
-function amountFor(perf, play) {
-  let thisAmount = 0;
+
+function amountFor(aPerformance, play) {
+  let result = 0;
   switch(play.type) {
       case "tragedy":
-          thisAmount = 40000;
-          if(perf.audience > 30) {
-              thisAmount +=1000 * (perf.audience - 30);
+          result = 40000;
+          if(aPerformance.audience > 30) {
+              result +=1000 * (aPerformance.audience - 30);
           }
           break;
       case "comedy":
-          thisAmount = 30000;
-          if(perf.audience > 20) {
-              thisAmount += 10000 + 500 * (perf.audience - 20);
+          result = 30000;
+          if(aPerformance.audience > 20) {
+              result += 10000 + 500 * (aPerformance.audience - 20);
           }
-          thisAmount += 300 * perf.audience;
+          result += 300 * aPerformance.audience;
           break;
       default:
           throw Error(`unkown type: ${play.type}`);
   }
-  return thisAmount;
+  return result;
 }
 
 /// DATA
