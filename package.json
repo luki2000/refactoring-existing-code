@@ -1,0 +1,15 @@
+{
+  "name": "refactor-play",
+  "version": "1.0.0",
+  "description": "",
+  "main": "plays.js",
+  "dependencies": {},
+  "devDependencies": {
+    "jasmine": "^3.5.0"
+  },
+  "scripts": {
+    "test": "jasmine"
+  },
+  "author": "",
+  "license": "ISC"
+}
