@@ -3,23 +3,27 @@
 
 function statment(invoice, plays) {
   let totalAmount = 0;
-  let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
   
   for(let perf of invoice.performances) {
 
-    volumeCredits += volumeCreditsFor(perf);
-
     // print line for this order
-    result += ` ${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience} seats)\n`;
+    result += ` ${playFor(perf).name}: ${currencyUSD(amountFor(perf)/100)} (${perf.audience} seats)\n`;
     totalAmount += amountFor(perf);
   }
-  result += `Amount owed is ${format(totalAmount/100)}\n`;
-  result += `You earned ${volumeCredits} credits\n`;
+ 
+  result += `Amount owed is ${currencyUSD(totalAmount)}\n`;
+  result += `You earned ${totalVolumeCredits()} credits\n`;
   return result;
 }
 
-
+function totalVolumeCredits() {
+  let result = 0;
+  for(let perf of invoice.performances) {
+    result += volumeCreditsFor(perf);
+  }
+  return result;
+}
 
 function playFor(aPerformance) {
   return plays[aPerformance.playID];
@@ -34,10 +38,10 @@ function volumeCreditsFor(aPerformance) {
   return result;
 }
 
-function format(aNumber) {
+function currencyUSD(aNumber) {
   return new Intl.NumberFormat("en-US",{ 
     style: "currency", currency: "USD",
-    minimumFractionDigits: 2}).format(aNumber);
+    minimumFractionDigits: 2}).format(aNumber/100);
 }
 
 
@@ -100,4 +104,12 @@ describe("AmountFor", function() {
     it("An audience of 35 in comedy plays should cost 58,000", function() {
       expect(amountFor(invoice.performances[1], plays['as-like'])).toBe(58000);
     });
+});
+
+
+describe("currencyUSD", function() {
+  it("number should be converted to dollars to two decimals in string", function() {
+    expect(currencyUSD(5500)).toBe('$55.00');
+  });
+
 });
